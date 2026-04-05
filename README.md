@@ -9,7 +9,6 @@ Each folder is a self-contained skill with its own README, install instructions,
 | Skill | Description | Status |
 |-------|-------------|--------|
 | [browser-use](./browser-use/) | Full browser control — navigate, click, type, screenshot, read pages | Ready |
-| [facebook-ads-spy](./facebook-ads-spy/) | Scrape Meta Ad Library — images, videos, transcripts, Obsidian Markdown | Ready |
 
 ## What Are Claude Code Skills?
 
