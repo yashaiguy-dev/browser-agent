@@ -6,8 +6,15 @@ You have a browser control tool at `~/.browser-tool/browser_tool.py` that contro
 
 If the tool isn't installed yet, run:
 ```bash
+# Download the tool
+mkdir -p ~/.browser-tool
+# (copy browser_tool.py to ~/.browser-tool/)
+
+# Install all dependencies (Playwright + Chromium)
 python3 ~/.browser-tool/browser_tool.py install
-python3 ~/.browser-tool/browser_tool.py install --with-patchright  # optional: anti-detection
+
+# Optional: add anti-detection support
+python3 ~/.browser-tool/browser_tool.py install --with-patchright
 ```
 
 ## Architecture
@@ -20,6 +27,10 @@ python3 ~/.browser-tool/browser_tool.py install --with-patchright  # optional: a
 
 ```bash
 BT="python3 ~/.browser-tool/browser_tool.py"
+
+# Install dependencies (first time only)
+$BT install                      # Playwright + Chromium
+$BT install --with-patchright    # + anti-detection engine
 
 # Launch (NOT background — it detaches automatically)
 $BT launch                      # Playwright
