@@ -10,6 +10,7 @@ Each folder is a self-contained skill with its own README, install instructions,
 |-------|-------------|--------|
 | [browser-use](./browser-use/) | Full browser control — navigate, click, type, screenshot, read pages | Ready |
 | [facebook-ads-spy](./facebook-ads-spy/) | Scrape any advertiser's Facebook ads — images, videos, copy, transcripts | Ready |
+| [youtube-ads-spy](./youtube-ads-spy/) | Find any brand's YouTube video ads — thumbnails, view counts, transcripts | Ready |
 
 ## What Are Claude Code Skills?
 
