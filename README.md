@@ -1,40 +1,90 @@
-# Agent Tech Skills (Open)
+# Browser Agent — Claude Code Skill
 
-A collection of open-source skills for Claude Code — giving your AI agent real-world superpowers.
+Give Claude Code full browser control. Navigate pages, click buttons, fill forms, take screenshots, and read page content — all through a real Chromium browser.
 
-Each folder is a self-contained skill with its own README, install instructions, and source files.
+## What It Does
 
-## Skills
+- Launches a real Chromium browser controlled via Chrome DevTools Protocol (CDP)
+- Claude can navigate, click, type, screenshot, and read any web page
+- Persistent login profile — log in once, stay logged in across sessions
+- Optional anti-detection mode (Patchright) for sites with bot protection
+- Accessibility tree snapshots for token-efficient page understanding
 
-| Skill | Description | Status |
-|-------|-------------|--------|
-| [browser-use](./browser-use/) | Full browser control — navigate, click, type, screenshot, read pages | Ready |
-| [facebook-ads-spy](./facebook-ads-spy/) | Scrape any advertiser's Facebook ads — images, videos, copy, transcripts | Ready |
-| [youtube-ads-spy](./youtube-ads-spy/) | Find any brand's YouTube video ads — thumbnails, view counts, transcripts | Ready |
+## Requirements
 
-## What Are Claude Code Skills?
+- Python 3.8+
+- macOS, Linux, or Windows
 
-Skills are markdown files that teach Claude Code how to use specific tools. When you place a `.md` file in `~/.claude/commands/`, it becomes available as a slash command (e.g., `/browser`). The skill file tells Claude what the tool can do, how to call it, and what rules to follow.
+## Installation
 
-## How to Install Any Skill
+### 1. Copy the tool
 
-Each skill folder contains:
-- **`README.md`** — Full install guide and usage docs
-- **Skill file** (`.md`) — Goes into `~/.claude/commands/`
-- **Tool files** (`.py`, `.sh`, etc.) — The actual tool Claude will call
-
-General steps:
-1. Copy the tool file(s) to the location specified in the skill's README
-2. Install any dependencies (usually one command)
-3. Copy the `.md` skill file to `~/.claude/commands/`
-4. Use it in Claude Code
-
-## Contributing
-
-Want to add a skill? Create a folder with:
+```bash
+mkdir -p ~/.browser-tool
+cp browser_tool.py ~/.browser-tool/browser_tool.py
 ```
-your-skill/
-  README.md          # Install + usage guide
-  your-skill.md      # The Claude Code skill file
-  tool_files...      # Whatever the skill needs
+
+### 2. Install dependencies
+
+```bash
+python3 ~/.browser-tool/browser_tool.py install
 ```
+
+This installs Playwright and downloads Chromium automatically.
+
+**Optional — anti-detection mode** (for Cloudflare/DataDome protected sites):
+
+```bash
+python3 ~/.browser-tool/browser_tool.py install --with-patchright
+```
+
+### 3. Add the skill to Claude Code
+
+Copy the skill file to your Claude Code commands directory:
+
+```bash
+mkdir -p ~/.claude/commands
+cp browser.md ~/.claude/commands/browser.md
+```
+
+### 4. Done
+
+Open Claude Code and type `/browser` to activate browser control. Or just ask Claude to "open a browser and go to example.com" — it will know what to do.
+
+## How It Works
+
+```
+You (Claude Code) ──> browser_tool.py ──> CDP ──> Chromium
+                                                    ↑
+                                          Stays open as a
+                                          detached process
+```
+
+1. `launch` starts Chromium with `--remote-debugging-port=9222` as a detached process
+2. Every other command (navigate, click, screenshot...) connects via CDP, does its work, disconnects
+3. The browser stays open independently — no process blocking
+4. Login sessions persist in `~/.browser-tool/profile/`
+
+## Quick Reference
+
+| Command | What it does |
+|---------|-------------|
+| `launch` | Start Chromium (or `--patchright` for anti-detection) |
+| `navigate <url>` | Go to a URL |
+| `click <selector>` | Click an element |
+| `type <selector> <text>` | Type into a field (`--clear` to replace) |
+| `snapshot` | Get accessibility tree (best for AI reasoning) |
+| `screenshot` | Save viewport screenshot |
+| `html` | Get page HTML |
+| `evaluate <js>` | Run JavaScript |
+| `wait --selector <sel>` | Wait for element to appear |
+| `pages` | List open tabs |
+| `status` | Check if browser is running |
+| `close` | Kill the browser |
+
+## Tips
+
+- **Use `snapshot` over `screenshot`** when Claude needs to understand page structure — it's faster and more token-efficient
+- **Use `--patchright`** when a site has Cloudflare, DataDome, or similar bot detection
+- **Logins persist** — once you log into a site, you stay logged in across Claude Code sessions
+- **Screenshots** are saved to `/tmp/browser_screenshots/` and auto-opened in Preview (macOS)
